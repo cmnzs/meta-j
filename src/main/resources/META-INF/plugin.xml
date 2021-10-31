@@ -7,6 +7,8 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Sample Calendar" secondary="true" icon="AllIcons.General.Modified" anchor="right"
+                    factoryClass="org.intellij.sdk.toolwindow.MyToolWindowFactory"/>
         <applicationService serviceImplementation="com.github.cmnzs.metaj.services.MyApplicationService"/>
         <projectService serviceImplementation="com.github.cmnzs.metaj.services.MyProjectService"/>
     </extensions>
