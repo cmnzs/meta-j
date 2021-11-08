@@ -3,47 +3,77 @@ package org.intellij.sdk.toolwindow
 
 import com.intellij.openapi.wm.ToolWindow
 import java.awt.event.ActionEvent
-import java.util.*
 import javax.swing.*
+
+
+data class GardenItem(
+    val name: String,
+    val description: String,
+    val status: GardenItemStatus,
+    val actions: Collection<GardenItemAction>
+)
+
+data class GardenItemAction(
+    val description: String,
+    val status: ActionStatus
+)
+
+enum class ActionStatus {
+    NEW,
+    PARTIAL,
+    DONE
+}
+
+enum class GardenItemStatus {
+    NEW,
+    IN_PROGRESS,
+    COMPLETE
+}
+
+object IdeaGardenState {
+    val items = listOf(
+        GardenItem(
+            "Learn Kotlin Coroutines",
+            "",
+            GardenItemStatus.NEW,
+            listOf(
+                GardenItemAction("Prototype parallel file reader", ActionStatus.PARTIAL)
+            )
+        ),
+        GardenItem(
+            "Understand Postgres indexing",
+            "",
+            GardenItemStatus.NEW,
+            listOf(
+                GardenItemAction("Prototype parallel file reader", ActionStatus.PARTIAL)
+            )
+        ),
+        GardenItem(
+            "Learn kafka metadata topics",
+            "",
+            GardenItemStatus.NEW,
+            listOf(
+                GardenItemAction("Prototype parallel file reader", ActionStatus.PARTIAL)
+            )
+        )
+    )
+}
 
 class MyToolWindow(toolWindow: ToolWindow) {
 
-    private lateinit var refreshToolWindowButton: JButton
-    private lateinit var hideToolWindowButton: JButton
-    private lateinit var currentDate: JLabel
-    private lateinit var currentTime: JLabel
-    private lateinit var timeZone: JLabel
-    private lateinit var myContent: JTextPane
+
     lateinit var myToolWindowContent: JPanel
-
-    fun currentDateTime() {
-        // Get current date and time
-        val instance = Calendar.getInstance()
-        currentDate.text = (instance[Calendar.DAY_OF_MONTH].toString() + "/"
-                + (instance[Calendar.MONTH] + 1) + "/"
-                + instance[Calendar.YEAR])
-        currentDate.icon = ImageIcon(javaClass.getResource("/toolWindow/Calendar-icon.png"))
-        val min = instance[Calendar.MINUTE]
-        val strMin = if (min < 10) "0$min" else min.toString()
-
-        val sec = instance[Calendar.SECOND]
-        val strSeconds = if (sec < 10) "0$sec" else sec.toString()
-
-        currentTime.text = "${instance[Calendar.HOUR_OF_DAY]}:$strMin:${strSeconds}"
-        currentTime.icon = ImageIcon(javaClass.getResource("/toolWindow/Time-icon.png"))
-        // Get time zone
-        val gmt_Offset = instance[Calendar.ZONE_OFFSET].toLong() // offset from GMT in milliseconds
-        var str_gmt_Offset = (gmt_Offset / 3600000).toString()
-        str_gmt_Offset = if (gmt_Offset > 0) "GMT + $str_gmt_Offset" else "GMT - $str_gmt_Offset"
-        timeZone.text = str_gmt_Offset
-        timeZone.icon = ImageIcon(javaClass.getResource("/toolWindow/Time-zone-icon.png"))
-
-        myContent.text = "Hello Ed Tech!!"
-    }
+    lateinit var editorPane1: JEditorPane
+    lateinit var submitButton: JButton
+    lateinit var gardenItems: JList<String>
 
     init {
-        hideToolWindowButton!!.addActionListener { e: ActionEvent? -> toolWindow.hide(null) }
-        refreshToolWindowButton!!.addActionListener { e: ActionEvent? -> currentDateTime() }
-        currentDateTime()
+        val listModel = DefaultListModel<String>()
+        listModel.addAll(IdeaGardenState.items.map { it.name })
+        gardenItems.model = listModel
+        editorPane1.text = "Enter a new learning goal here..."
+
+        submitButton!!.addActionListener { e: ActionEvent? -> listModel.add(listModel.size(), editorPane1.text) }
+
     }
 }
