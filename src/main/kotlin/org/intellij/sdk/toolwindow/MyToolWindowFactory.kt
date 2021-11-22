@@ -95,6 +95,7 @@ class IdeaGarden {
             goalListModel.add(goalListModel.size, newItem)
             val l = goalListModel.elements().toList()
             updateState(l)
+            goalEditor.text = "Enter new goal here..."
         }
 
 
@@ -129,6 +130,7 @@ class IdeaGarden {
             goalListModel[i] = newItem
             val l = goalListModel.elements().toList()
             updateState(l)
+            actionEditor.text = "Enter new action..."
         }
 
         actionsPanel.add(actionsLabel, glh(0, 0))
