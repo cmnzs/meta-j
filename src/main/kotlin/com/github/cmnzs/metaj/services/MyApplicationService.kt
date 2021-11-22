@@ -1,12 +1,10 @@
 package com.github.cmnzs.metaj.services
 
 import com.github.cmnzs.metaj.MyBundle
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.Project
 
 data class GardenItem(
     val name: String,

@@ -4,8 +4,6 @@ package org.intellij.sdk.toolwindow
 import com.github.cmnzs.metaj.services.GardenItem
 import com.github.cmnzs.metaj.services.IdeaGardenState
 import com.github.cmnzs.metaj.services.MyApplicationService
-import com.intellij.openapi.components.service
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import java.awt.event.ActionEvent
 import javax.swing.*
@@ -13,31 +11,53 @@ import javax.swing.*
 
 class MyToolWindow(toolWindow: ToolWindow) {
 
+    lateinit var goalHeader: JLabel
+    lateinit var planHeader: JLabel
+
     lateinit var myToolWindowContent: JPanel
-    lateinit var editorPane1: JEditorPane
-    lateinit var submitButton: JButton
+    lateinit var goalContainer: JPanel
+    lateinit var actionContainer: JPanel
+
+    lateinit var actionEditor: JEditorPane
+    lateinit var goalEditor: JEditorPane
+
+    lateinit var addAction: JButton
+    lateinit var addGoal: JButton
+    lateinit var removeGoal: JButton
+    lateinit var removeAction: JButton
+
     lateinit var gardenItems: JList<String>
+    lateinit var actionList: JList<String>
 
     init {
         val listModel = DefaultListModel<String>()
         println("Initializing Idea Garden tool window component.")
 
         val myApplicationService = MyApplicationService.getInstance()
-        var myState = myApplicationService.myState
-        editorPane1.text = "Enter your goal"
+        val myState = myApplicationService.myState
+        goalEditor.text = "Enter your goal"
 
-        listModel.addAll(if (myState.items.isEmpty()) {
-            IdeaGardenState.items.map { it.name }
+        if (myState.items.isEmpty()) {
+            val list = IdeaGardenState.items.map { it.name }
+            myApplicationService.myState =
+                myApplicationService.myState.copy(items = list.map { GardenItem(it) })
+            listModel.addAll(list)
         } else {
-            myState.items.map { it.name }
-        })
+            val list = myState.items.map { it.name }
+            listModel.addAll(list)
+        }
+
 
         gardenItems.model = listModel
 
-        submitButton!!.addActionListener { e: ActionEvent? ->
-            val newItem = GardenItem(editorPane1.text)
+        addAction.addActionListener { e: ActionEvent? ->
+            val newItem = GardenItem(goalEditor.text)
+            // add to list Model
             listModel.add(listModel.size(), newItem.name)
-            myApplicationService.myState = myApplicationService.myState.copy(myApplicationService.myState.items + newItem)
+            // add to persisted state
+            // should listModel instead have event listener that updates the applicationService state?
+            myApplicationService.myState =
+                myApplicationService.myState.copy(items = myApplicationService.myState.items + newItem)
         }
 
     }
