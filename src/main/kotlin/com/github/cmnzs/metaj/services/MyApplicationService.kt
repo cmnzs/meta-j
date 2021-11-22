@@ -43,9 +43,9 @@ object IdeaGardenState {
         GardenItem(
             "Understand Postgres indexing",
             "",
-            GardenItemStatus.NEW,
+            GardenItemStatus.COMPLETE,
             listOf(
-                GardenItemAction("Prototype parallel file reader", ActionStatus.PARTIAL)
+                GardenItemAction("Read database source code", ActionStatus.DONE)
             )
         ),
         GardenItem(
@@ -53,7 +53,7 @@ object IdeaGardenState {
             "",
             GardenItemStatus.NEW,
             listOf(
-                GardenItemAction("Prototype parallel file reader", ActionStatus.PARTIAL)
+                GardenItemAction("Spin up docker compose", ActionStatus.NEW)
             )
         )
     )
